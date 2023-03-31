@@ -9,22 +9,22 @@ import Combine
 
 class HomeViewModel {
     var model = HomeModel()
-    var getWeatherDetailsPublisher: AnyPublisher<String, Never> {
-        getWeatherDetailsSubject.eraseToAnyPublisher()
+    var getCategoriesPublisher: AnyPublisher<String, Never> {
+        getCategoriesSubject.eraseToAnyPublisher()
     }
-    let getWeatherDetailsSubject = PassthroughSubject<String, Never>()
+    let getCategoriesSubject = PassthroughSubject<String, Never>()
     
-    /// Get current Weather from the API
-    func getCurrentWeather(controller: UIViewController) {
+    /// Get all categories from the server
+    func getCategories(controller: UIViewController) {
         Connectivity.shared.startLoad()
-        HomeEndPoint.getCurrentWeather(query: self.model.currentLoc ?? "Chandigarh").instance.executeQuery { (response: GetWeather) in
+        HomeEndPoint.getCategories.instance.executeQuery { (response: GetCategories) in
             Connectivity.shared.endLoad()
-//            if response.current != nil {
-                self.model.dataResponse = response
-                self.getWeatherDetailsSubject.send("")
-//            } else {
-//                controller.showalertview(messagestring: "Something went worng")
-//            }
+            if response.result?.categories?.isEmpty == false {
+                self.model.dataResponse = response.result?.categories
+                self.getCategoriesSubject.send("")
+            } else {
+                controller.showalertview(messagestring: "\(response.error?.message ?? "")")
+            }
         } error: { (errorMsg) in
             Connectivity.shared.endLoad()
             controller.showalertview(messagestring: errorMsg ?? "")

@@ -4,23 +4,29 @@ PODS:
     - NVActivityIndicatorView/Presenter (= 4.8.0)
   - NVActivityIndicatorView/Presenter (4.8.0)
   - ReachabilitySwift (5.0.0)
+  - SDWebImage (5.15.5):
+    - SDWebImage/Core (= 5.15.5)
+  - SDWebImage/Core (5.15.5)
 
 DEPENDENCIES:
   - Alamofire
   - NVActivityIndicatorView (~> 4.8.0)
   - ReachabilitySwift
+  - SDWebImage
 
 SPEC REPOS:
   trunk:
     - Alamofire
     - NVActivityIndicatorView
     - ReachabilitySwift
+    - SDWebImage
 
 SPEC CHECKSUMS:
   Alamofire: 4e95d97098eacb88856099c4fc79b526a299e48c
   NVActivityIndicatorView: d24b7ebcf80af5dcd994adb650e2b6c93379270f
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
+  SDWebImage: fd7e1a22f00303e058058278639bf6196ee431fe
 
-PODFILE CHECKSUM: c257a060d357e92ece2df869fe9a27e98b1bc5c4
+PODFILE CHECKSUM: 29637e26c6464ce7d4219a90715a7f343f64088c
 
 COCOAPODS: 1.12.0

@@ -431,6 +431,27 @@ extension Locale {
         let locale = Locale(identifier: Locale.identifier(fromComponents: [NSLocale.Key.countryCode.rawValue: $1]))
         $0[$1] = (locale.currencyCode, locale.currencySymbol)
     }
+    func localizedCurrencySymbol(forCurrencyCode currencyCode: String) -> String? {
+        guard let languageCode = languageCode, let regionCode = regionCode else { return nil }
+
+        /*
+         Each currency can have a symbol ($, £, ¥),
+         but those symbols may be shared with other currencies.
+         For example, in Canadian and American locales,
+         the $ symbol on its own implicitly represents CAD and USD, respectively.
+         Including the language and region here ensures that
+         USD is represented as $ in America and US$ in Canada.
+        */
+        let components: [String: String] = [
+            NSLocale.Key.languageCode.rawValue: languageCode,
+            NSLocale.Key.countryCode.rawValue: regionCode,
+            NSLocale.Key.currencyCode.rawValue: currencyCode,
+        ]
+
+        let identifier = Locale.identifier(fromComponents: components)
+
+        return Locale(identifier: identifier).currencySymbol
+    }
 }
 extension UserDefaults {
     func object<T: Codable>(_ type: T.Type, with key: String, usingDecoder decoder: JSONDecoder = JSONDecoder()) -> T? {
@@ -649,5 +670,18 @@ extension UIImageView {
                     })
 
                 }).resume()        
+    }
+}
+struct MyCurrency: Codable {
+    let code: String
+    let name: String
+    let symbol: String
+}
+var currencies: [MyCurrency] {
+    return Locale.availableIdentifiers.compactMap {
+        guard let currencyCode = Locale(identifier: $0).currencyCode,
+              let name = Locale.autoupdatingCurrent.localizedString(forCurrencyCode: currencyCode),
+              let symbol = Locale(identifier: $0).currencySymbol  else { return nil }
+        return MyCurrency(code: $0, name: name, symbol: symbol)
     }
 }
