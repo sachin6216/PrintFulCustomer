@@ -1,5 +1,6 @@
 //
-//  HomeViewController.swift
+//  ProductViewController.swift
+//  PrintFulCustomer
 //
 //  Created by Sachin on 31/03/23.
 //
@@ -7,8 +8,7 @@
 import UIKit
 import Combine
 import SDWebImage
-
-class HomeViewController: UIViewController {
+class ProductViewController: UIViewController {
     
     // MARK: - Properties
     @IBOutlet weak var collectionView: UICollectionView! {
@@ -18,7 +18,7 @@ class HomeViewController: UIViewController {
         }
     }
     // MARK: - Variables
-    var viewModel = HomeViewModel()
+    var viewModel = ProductViewModel()
     private var subscriptions = Set<AnyCancellable>()
     
     // MARK: - Life cycle
@@ -29,7 +29,7 @@ class HomeViewController: UIViewController {
         self.registerCellXib()
     }
     override func viewWillAppear(_ animated: Bool) {
-        self.viewModel.getCategories(controller: self)
+        self.viewModel.getProductList(controller: self)
     }
     // MARK: - IBActions
     // MARK: - Extra functions
@@ -38,26 +38,26 @@ class HomeViewController: UIViewController {
     }
     /// Set UI properties
     func setNavigationUI() {
-        self.navigationItem.title = "Categories"
+        self.navigationItem.title = "Products"
     }
     // MARK: - APIs
     /// Subscribe the publisher to get callbacks from the change events.
     func subscribers() {
-        self.viewModel.getCategoriesPublisher.sink { _ in
+        self.viewModel.getProductListPublisher.sink { _ in
             self.collectionView.reloadData()
         }.store(in: &subscriptions)
     }
     
 }
 // MARK: - Extension UI
-extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension ProductViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.viewModel.model.dataResponse?.count ?? 0
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "categoryCell", for: indexPath) as? CategoryCollectionViewCell else { return UICollectionViewCell() }
         let dataItem = self.viewModel.model.dataResponse?[indexPath.row]
-        cell.imgItem.sd_setImage(with: URL.init(string: dataItem?.imageURL ?? ""), placeholderImage: #imageLiteral(resourceName: "palaceholder"), options: .highPriority, context: nil)
+        cell.imgItem.sd_setImage(with: URL.init(string: dataItem?.image ?? ""), placeholderImage: #imageLiteral(resourceName: "palaceholder"), options: .highPriority, context: nil)
         cell.lblItemName.text = dataItem?.title ?? ""
         return cell
     }
@@ -71,9 +71,9 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         return 8
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let nextVc = self.storyboard?.instantiateViewController(withIdentifier: "ProductViewController") as? ProductViewController else { return }
-        if let categoryId = self.viewModel.model.dataResponse?[indexPath.row].id {
-            nextVc.viewModel.model.categoryId = "\(categoryId)"
+        guard let nextVc = self.storyboard?.instantiateViewController(withIdentifier: "ProductDetailsViewController") as? ProductDetailsViewController else { return }
+        if let productId = self.viewModel.model.dataResponse?[indexPath.row].id {
+            nextVc.viewModel.model.productId = "\(productId)"
             self.navigationController?.pushViewController(nextVc, animated: true)
         }
         

@@ -8,31 +8,34 @@ import UIKit
 import Alamofire
 enum HomeEndPoint: TargetType {
     
-    case getCurrentWeather(query: String)
+    case getCategories
+    case getProductList(categoryId: String)
+    case getProductDetails(productId: String)
     var data: [String: Any] {
         switch self {
-        case .getCurrentWeather(query: let query):
-            return [
-                "query": query
-            ]
+        default:
+            return [:]
         }
     }
     var service: String {
         switch self {
-        case .getCurrentWeather: return ApisURL.ServiceUrls.getCurrentWeather.rawValue
+        case .getCategories: return ApisURL.ServiceUrls.getCategories.rawValue
+        case .getProductList(categoryId: let categoryId):
+            return "\(ApisURL.ServiceUrls.getProductList.rawValue)\(categoryId)"
+        case .getProductDetails(productId: let productId): return "\(ApisURL.ServiceUrls.getProductDetails.rawValue)\(productId)"
         }
     }
     
     var method: HTTPMethod {
         switch self {
-        case .getCurrentWeather:
+        case .getCategories, .getProductList, .getProductDetails:
             return .get
         }
     }
     
     var isJSONRequest: Bool {
         switch self {
-        case .getCurrentWeather:
+        case .getCategories, .getProductList, .getProductDetails:
             return false
         }
     }
