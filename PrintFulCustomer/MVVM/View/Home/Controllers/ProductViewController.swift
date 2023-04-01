@@ -32,12 +32,13 @@ class ProductViewController: UIViewController {
         self.viewModel.getProductList(controller: self)
     }
     // MARK: - IBActions
-    // MARK: - Extra functions
-    fileprivate func registerCellXib() {
-        self.collectionView.register(UINib.init(nibName: "CategoryCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "categoryCell")
-    }
     @objc func btnBack() {
         self.navigationController?.popViewController(animated: true)
+    }
+    // MARK: - Extra functions
+    /// Register nib on UICollectionView
+    fileprivate func registerCellXib() {
+        self.collectionView.register(UINib.init(nibName: "CategoryCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "categoryCell")
     }
     /// Set UI properties
     func setNavigationUI() {
