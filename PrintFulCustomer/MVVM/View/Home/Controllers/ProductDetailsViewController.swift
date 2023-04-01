@@ -45,11 +45,19 @@ class ProductDetailsViewController: UIViewController {
         self.bgDescView.isHidden = self.viewModel.model.isDescDropExpand
         self.btnDescDropDown.setImage(UIImage.init(systemName: self.viewModel.model.isDescDropExpand ? "chevron.down" : "chevron.up"), for: .normal)
     }
+    @objc func btnBack() {
+        self.navigationController?.popViewController(animated: true)
+    }
     // MARK: - Extra Methods
     /// Set UI properties
     func setNavigationUI() {
         self.navigationItem.title = "Products Details"
+        let leftBarBtn = UIBarButtonItem.init(image: UIImage.init(systemName: "chevron.backward"), style: .done, target: self, action: #selector(btnBack))
+        self.navigationItem.leftBarButtonItem = leftBarBtn
+        self.navigationController?.navigationItem.largeTitleDisplayMode = .never
+        self.navigationController?.navigationBar.tintColor = .red
         self.btnContinue.layer.cornerRadius = 10
+        self.imgProduct.layer.cornerRadius = 10
     }
     // MARK: - APIs
     /// Update data on UI
@@ -60,6 +68,14 @@ class ProductDetailsViewController: UIViewController {
         self.lblDesc.text = dataResponseDetails?.product?.description ?? ""
         self.lblProductName.text = dataResponseDetails?.product?.title ?? ""
         self.bgDescView.isHidden = dataResponseDetails?.product?.description?.isEmpty ?? true
+        
+        let numItems = dataResponseDetails?.variants?.count ?? 1// total number of items
+        let numColumns = 4 // number of items per column
+        let collectionViewHeight = 40// height of the UICollectionView
+
+        let numRows = Int(ceil(Double(numItems) / Double(numColumns)))
+        let totalHeight = collectionViewHeight * (numRows)
+        self.heightSizeCollection.constant = CGFloat(totalHeight)
         self.sizeCollectionView.reloadData()
     }
     
@@ -79,13 +95,13 @@ extension ProductDetailsViewController: UICollectionViewDelegate, UICollectionVi
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "sizeCell", for: indexPath) as? SizeCollectionViewCell else { return UICollectionViewCell() }
         let dataItem = self.viewModel.model.productDetailsResponse?.variants?[indexPath.row]
         let isSelectedIndex = self.viewModel.model.isSelectedSizeIndex == indexPath.row
-        cell.bgView.layer.borderColor = isSelectedIndex ? UIColor.black.cgColor : UIColor.systemGray4.cgColor
-        cell.lblSize.textColor = isSelectedIndex ? UIColor.black : UIColor.systemGray4
+        cell.bgView.layer.borderColor = isSelectedIndex ? UIColor.label.cgColor : UIColor.systemGray4.cgColor
+        cell.lblSize.textColor = isSelectedIndex ? UIColor.label : UIColor.systemGray4
         cell.lblSize.text = dataItem?.size ?? ""
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize.init(width: (self.sizeCollectionView.frame.width / CGFloat(self.viewModel.model.productDetailsResponse?.variants?.count ?? 0)) - 8, height: self.sizeCollectionView.frame.height)
+        return CGSize.init(width: (self.sizeCollectionView.frame.width / 4) - 8, height: 35)
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 5
