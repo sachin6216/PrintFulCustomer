@@ -33,6 +33,7 @@ class HomeViewController: UIViewController {
     }
     // MARK: - IBActions
     // MARK: - Extra functions
+    /// Register nib on UICollectionView
     fileprivate func registerCellXib() {
         self.collectionView.register(UINib.init(nibName: "CategoryCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "categoryCell")
     }

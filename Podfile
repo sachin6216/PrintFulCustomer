@@ -10,7 +10,6 @@ pod 'Alamofire'
 pod 'ReachabilitySwift'
 pod 'NVActivityIndicatorView' , '~> 4.8.0'
 pod 'SDWebImage'
-#pod 'Cosmos'
 
   target 'PrintFulCustomerTests' do
     inherit! :search_paths

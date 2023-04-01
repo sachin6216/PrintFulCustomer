@@ -32,13 +32,21 @@ class ProductViewController: UIViewController {
         self.viewModel.getProductList(controller: self)
     }
     // MARK: - IBActions
+    @objc func btnBack() {
+        self.navigationController?.popViewController(animated: true)
+    }
     // MARK: - Extra functions
+    /// Register nib on UICollectionView
     fileprivate func registerCellXib() {
         self.collectionView.register(UINib.init(nibName: "CategoryCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "categoryCell")
     }
     /// Set UI properties
     func setNavigationUI() {
+        let leftBarBtn = UIBarButtonItem.init(image: UIImage.init(systemName: "chevron.backward"), style: .done, target: self, action: #selector(btnBack))
+        self.navigationItem.leftBarButtonItem = leftBarBtn
         self.navigationItem.title = "Products"
+        self.navigationController?.navigationItem.largeTitleDisplayMode = .never
+        self.navigationController?.navigationBar.tintColor = .red
     }
     // MARK: - APIs
     /// Subscribe the publisher to get callbacks from the change events.
